@@ -3,43 +3,22 @@
     .chat-main__header__main
       .left
         %h2.group-about
-          グループ概要
+          = @group.name
         %ul.member-list
-          member:
-          %li
-          = link_to "#", class: "member-name" do
-            akita 
-          %li
-          = link_to "#", class: "member-name" do
-            akiat 
+          - @group.users.each do |user|
+            = user.name 
+          
       .main__header__edit-btn
-        = link_to "#" do
-          Edit
-
+        = link_to "edit" , edit_group_path(@group.id)
+          
   .messages
-    .message
-      .message__info
-        %p.message__info__talker
-          akita 
-        %p.message__info__date
-          2020/3/14(Wed) 11:45:09
-      %p.message__text
-        Hello
-    .message
-      .message__info
-        %p.message__info__talker
-          akita 
-        %p.message__info__date
-          2020/3/14(Wed) 11:45:09
-      %p.message__text
-        Hello
-
-  .form
-    %form
-      %input.form__message
+    - @messages.each do |message|
+      = render partial: "messages", locals: { message: message }    
+  .form             
+    = form_for [@group, @message] do |f|
+      = f.text_field :content, class: 'form__message', placeholder: 'type a message'
       .form__mask
-        %label.form__mask__image
-          = icon('fa','image',class: 'icon')
-          %input.hidden{type: 'file'}
-      %input.form__submit{type: 'submit', value: 'Send'}
-  
+        = f.label :image, class: 'form__mask__image' do
+          = icon('fas', 'image', class: 'icon')
+          = f.file_field :image, class: 'hidden'
+      = f.submit 'Send', class: 'form__submit'
